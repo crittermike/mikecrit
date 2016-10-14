@@ -1,0 +1,13 @@
+name: Mike Crittenden
+type: theme
+description: 'A basic, amazing theme for mikecr.it'
+package: Core
+core: 8.x
+base theme: false
+libraries:
+  - mikecrit/base
+regions:
+  header: 'Header'
+  sidebar: 'Sidebar'
+  content: 'Content'
+  footer: 'Footer'
