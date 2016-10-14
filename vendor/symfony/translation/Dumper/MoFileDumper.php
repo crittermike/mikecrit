@@ -36,7 +36,7 @@ class MoFileDumper extends FileDumper
      */
     public function formatCatalogue(MessageCatalogue $messages, $domain, array $options = array())
     {
-        $sources = $targets = $sourceOffsets = $targetOffsets = '';
+        $output = $sources = $targets = $sourceOffsets = $targetOffsets = '';
         $offsets = array();
         $size = 0;
 

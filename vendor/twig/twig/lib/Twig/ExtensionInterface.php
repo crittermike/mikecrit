@@ -82,8 +82,6 @@ interface Twig_ExtensionInterface
      * Returns the name of the extension.
      *
      * @return string The extension name
-     *
-     * @deprecated since 1.26 (to be removed in 2.0), not used anymore internally
      */
     public function getName();
 }

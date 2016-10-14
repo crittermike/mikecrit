@@ -354,7 +354,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
     /**
      * Returns all Scope children.
      *
-     * @return array An array of scope children
+     * @return array An array of scope children.
      *
      * @deprecated since version 2.8, to be removed in 3.0.
      */
@@ -381,14 +381,21 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
     public function set($id, $service, $scope = self::SCOPE_CONTAINER)
     {
         $id = strtolower($id);
-        $set = isset($this->definitions[$id]);
 
-        if ($this->isFrozen() && ($set || isset($this->obsoleteDefinitions[$id])) && !$this->{$set ? 'definitions' : 'obsoleteDefinitions'}[$id]->isSynthetic()) {
+        if ($this->isFrozen()) {
             // setting a synthetic service on a frozen container is alright
-            throw new BadMethodCallException(sprintf('Setting service "%s" on a frozen container is not allowed.', $id));
+            if (
+                (!isset($this->definitions[$id]) && !isset($this->obsoleteDefinitions[$id]))
+                    ||
+                (isset($this->definitions[$id]) && !$this->definitions[$id]->isSynthetic())
+                    ||
+                (isset($this->obsoleteDefinitions[$id]) && !$this->obsoleteDefinitions[$id]->isSynthetic())
+            ) {
+                throw new BadMethodCallException(sprintf('Setting service "%s" on a frozen container is not allowed.', $id));
+            }
         }
 
-        if ($set) {
+        if (isset($this->definitions[$id])) {
             $this->obsoleteDefinitions[$id] = $this->definitions[$id];
         }
 
@@ -474,10 +481,6 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
             }
 
             throw $e;
-        } catch (\Throwable $e) {
-            unset($this->loading[$id]);
-
-            throw $e;
         }
 
         unset($this->loading[$id]);
@@ -503,7 +506,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
      * parameter, the value will still be 'bar' as defined in the ContainerBuilder
      * constructor.
      *
-     * @param ContainerBuilder $container The ContainerBuilder instance to merge
+     * @param ContainerBuilder $container The ContainerBuilder instance to merge.
      *
      * @throws BadMethodCallException When this ContainerBuilder is frozen
      */
@@ -1004,7 +1007,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
      *
      * @param string $name The tag name
      *
-     * @return array An array of tags with the tagged service as key, holding a list of attribute arrays
+     * @return array An array of tags with the tagged service as key, holding a list of attribute arrays.
      */
     public function findTaggedServiceIds($name)
     {
@@ -1060,7 +1063,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
     /**
      * Returns the Service Conditionals.
      *
-     * @param mixed $value An array of conditionals to return
+     * @param mixed $value An array of conditionals to return.
      *
      * @return array An array of Service conditionals
      */

@@ -94,13 +94,8 @@ class FlattenException extends LegacyFlattenException
         $e->setClass(get_class($exception));
         $e->setFile($exception->getFile());
         $e->setLine($exception->getLine());
-
-        $previous = $exception->getPrevious();
-
-        if ($previous instanceof \Exception) {
-            $e->setPrevious(static::create($previous));
-        } elseif ($previous instanceof \Throwable) {
-            $e->setPrevious(static::create(new FatalThrowableError($previous)));
+        if ($exception->getPrevious()) {
+            $e->setPrevious(static::create($exception->getPrevious()));
         }
 
         return $e;
@@ -263,10 +258,7 @@ class FlattenException extends LegacyFlattenException
             if (++$count > 1e4) {
                 return array('array', '*SKIPPED over 10000 entries*');
             }
-            if ($value instanceof \__PHP_Incomplete_Class) {
-                // is_object() returns false on PHP<=7.1
-                $result[$key] = array('incomplete-object', $this->getClassNameFromIncomplete($value));
-            } elseif (is_object($value)) {
+            if (is_object($value)) {
                 $result[$key] = array('object', get_class($value));
             } elseif (is_array($value)) {
                 if ($level > 10) {
@@ -280,6 +272,9 @@ class FlattenException extends LegacyFlattenException
                 $result[$key] = array('boolean', $value);
             } elseif (is_resource($value)) {
                 $result[$key] = array('resource', get_resource_type($value));
+            } elseif ($value instanceof \__PHP_Incomplete_Class) {
+                // Special case of object, is_object will return false
+                $result[$key] = array('incomplete-object', $this->getClassNameFromIncomplete($value));
             } else {
                 $result[$key] = array('string', (string) $value);
             }

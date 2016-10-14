@@ -327,7 +327,7 @@ class YamlDumper extends Dumper
      *
      * @return array
      */
-    private function prepareParameters(array $parameters, $escape = true)
+    private function prepareParameters($parameters, $escape = true)
     {
         $filtered = array();
         foreach ($parameters as $key => $value) {
@@ -350,7 +350,7 @@ class YamlDumper extends Dumper
      *
      * @return array
      */
-    private function escape(array $arguments)
+    private function escape($arguments)
     {
         $args = array();
         foreach ($arguments as $k => $v) {
